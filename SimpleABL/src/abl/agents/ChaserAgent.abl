@@ -30,6 +30,9 @@ behaving_entity ChaserAgent {
 	
 	/* added move action starter1 */
 	register act move(int, int, int) with MoveTo;
+	
+	/* added SetColor action starter3 */
+	register act SetColor(int, int, int, int) with SetColor;
 
 	/**
 	 * Define the sensors that add game state to working memory. Each sensor defines the name of the WME class
@@ -50,8 +53,15 @@ behaving_entity ChaserAgent {
 	 * After an initial delay, continuously fire bullets. 
 	 */
 	sequential behavior manageFiring() {
+		precondition {
+			(BotWME id::id)
+		}
+		
+		act SetColor(0,0,0,id);
 		subgoal Wait(2000);					// this suspends the execution of the behavior
 		with (persistent) subgoal fire();
+		act SetColor(255,255,255,id);
+		subgoal Wait(2000);					// this suspends the execution of the behavior
 	}
 
     /**
@@ -63,8 +73,9 @@ behaving_entity ChaserAgent {
 		precondition {
 			(PlayerWME locationX::playerX locationY::playerY)	// locationX invokes PlayerMWE.getLocationX() 
 			(BotWME locationX::botX locationY::botY)   // :: is used to bind properties to behavior scoped variables
+			(BotWME id::id)
 		}
-
+		
 		act fire(botX, botY, playerX, playerY);	
 		subgoal Wait(500);
 	}
@@ -73,7 +84,7 @@ behaving_entity ChaserAgent {
 	 * Continuously move towards the player character.
 	 */
 	sequential behavior manageMovement() {
-		with (persistent) subgoal MoveTo(200, 1000);//move();
+		with (persistent) subgoal MoveTo(100, 100);//move();
 	}
 
 	/**
