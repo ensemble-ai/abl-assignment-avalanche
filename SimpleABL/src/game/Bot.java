@@ -72,4 +72,13 @@ public class Bot {
 	public void setColor(Color color) {
 		this.color = color;
 	}
+	
+	public void move(Point destination){
+		double dx = destination.x - location.x;
+		double dy = destination.y - location.y;
+		double magnitude = Math.sqrt(dx*dx + dy*dy);
+		dx = GameEngine.BotSpeed*dx/magnitude;
+		dy = GameEngine.BotSpeed*dy/magnitude;
+		this.setTrajectory(new Point((int) dx, (int) dy));
+	}
 }

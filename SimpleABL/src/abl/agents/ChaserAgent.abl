@@ -27,6 +27,9 @@ behaving_entity ChaserAgent {
 	register act moveRight(int) with MoveRight;
 	register act stop(int) with Stop;
 	register act fire(int, int, int, int) with Fire;
+	
+	/* added move action starter1 */
+	register act move(int, int, int) with MoveTo;
 
 	/**
 	 * Define the sensors that add game state to working memory. Each sensor defines the name of the WME class
@@ -70,7 +73,7 @@ behaving_entity ChaserAgent {
 	 * Continuously move towards the player character.
 	 */
 	sequential behavior manageMovement() {
-		with (persistent) subgoal move();
+		with (persistent) subgoal MoveTo(200, 1000);//move();
 	}
 
 	/**
@@ -162,6 +165,18 @@ behaving_entity ChaserAgent {
 	    }
 	    
 	    with ( success_test { (System.currentTimeMillis() > finish) } ) wait;
+	}
+	
+	/**
+	 * Moves the bot to the given location
+	 */
+	sequential behavior MoveTo(int x, int y) {
+		precondition {
+			(BotWME id::id)
+		}
+		specificity 1;
+		
+		act move(x, y, id);
 	}
  
     /** 
