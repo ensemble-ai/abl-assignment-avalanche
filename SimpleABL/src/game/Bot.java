@@ -18,6 +18,7 @@ public class Bot {
 	/** unique bot ID */
 	private int id;
 
+	/** color of the bot */
 	private Color color;
 	
 	private int size = Size;

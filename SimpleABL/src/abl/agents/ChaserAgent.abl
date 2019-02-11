@@ -57,11 +57,8 @@ behaving_entity ChaserAgent {
 			(BotWME id::id)
 		}
 		
-		act SetColor(0,0,0,id);
 		subgoal Wait(2000);					// this suspends the execution of the behavior
 		with (persistent) subgoal fire();
-		act SetColor(255,255,255,id);
-		subgoal Wait(2000);					// this suspends the execution of the behavior
 	}
 
     /**
@@ -74,9 +71,16 @@ behaving_entity ChaserAgent {
 			(PlayerWME locationX::playerX locationY::playerY)	// locationX invokes PlayerMWE.getLocationX() 
 			(BotWME locationX::botX locationY::botY)   // :: is used to bind properties to behavior scoped variables
 			(BotWME id::id)
+			(BotWME colorR::colorR)
 		}
 		
+		with (priority 2) mental_act {
+			System.out.println("red value:" + colorR);
+		}
+		act SetColor(255,0,0,id);
 		act fire(botX, botY, playerX, playerY);	
+		subgoal Wait(500);
+		act SetColor(0,255,255,id);
 		subgoal Wait(500);
 	}
 
