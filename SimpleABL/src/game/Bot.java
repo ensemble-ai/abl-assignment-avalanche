@@ -21,6 +21,8 @@ public class Bot {
 	/** color of the bot */
 	private Color color;
 	
+	private boolean fired = false;
+	
 	private int size = Size;
 	
 	public Bot() {

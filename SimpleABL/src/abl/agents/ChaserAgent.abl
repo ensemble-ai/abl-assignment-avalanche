@@ -33,6 +33,9 @@ behaving_entity ChaserAgent {
 	
 	/* added SetColor action starter3 */
 	register act SetColor(int, int, int, int) with SetColor;
+	
+	/* added create new bot action intermediate1 */
+	register act NewBot() with MakeBot;
 
 	/**
 	 * Define the sensors that add game state to working memory. Each sensor defines the name of the WME class
@@ -53,10 +56,6 @@ behaving_entity ChaserAgent {
 	 * After an initial delay, continuously fire bullets. 
 	 */
 	sequential behavior manageFiring() {
-		precondition {
-			(BotWME id::id)
-		}
-		
 		subgoal Wait(2000);					// this suspends the execution of the behavior
 		with (persistent) subgoal fire();
 	}
@@ -69,26 +68,22 @@ behaving_entity ChaserAgent {
 	sequential behavior fire() {
 		precondition {
 			(PlayerWME locationX::playerX locationY::playerY)	// locationX invokes PlayerMWE.getLocationX() 
-			(BotWME locationX::botX locationY::botY)   // :: is used to bind properties to behavior scoped variables
-			(BotWME id::id)
-			(BotWME colorR::colorR)
+			(BotWME locationX::botX locationY::botY id::id)   // :: is used to bind properties to behavior scoped variables
 		}
-		
-		with (priority 2) mental_act {
-			System.out.println("red value:" + colorR);
-		}
+
 		act SetColor(255,0,0,id);
 		act fire(botX, botY, playerX, playerY);	
 		subgoal Wait(500);
 		act SetColor(0,255,255,id);
-		subgoal Wait(500);
+		subgoal Wait(500);	
 	}
 
 	/**
 	 * Continuously move towards the player character.
 	 */
 	sequential behavior manageMovement() {
-		with (persistent) subgoal MoveTo(100, 100);//move();
+		// with (persistent) subgoal MoveTo(100, 100);
+		with (persistent) subgoal move();
 	}
 
 	/**
@@ -100,13 +95,20 @@ behaving_entity ChaserAgent {
 	 */ 
 	sequential behavior move() {
 		precondition {
-			(PlayerWME locationY::playerY)
-			(BotWME locationY::botY id::id) 
+			(PlayerWME locationX::playerX locationY::playerY)
+			(BotWME id::id locationX::botX locationY::botY trajectoryY::trajectoryY)
 			(botY > (playerY + botSpeed))
+			(trajectoryY>=0)  // only consider going up if we are not moving up
 		}
 		specificity 3;
+		mental_act {
+			if(id == 1){
+				System.out.println("moving up" + id);
+			}
+		}
  
 		act moveUp(id);
+		succeed_step;
 	}
  	
 	/**
@@ -114,13 +116,20 @@ behaving_entity ChaserAgent {
 	 */
 	sequential behavior move() {
 		precondition {
-			(PlayerWME locationY::playerY)
-			(BotWME locationY::botY id::id) 
+			(PlayerWME locationX::playerX locationY::playerY)
+			(BotWME id::id locationX::botX locationY::botY trajectoryY::trajectoryY) 
 			(botY < (playerY - botSpeed))
+			(trajectoryY<=0)  // only consider going down if we are not moving down
 		}
 		specificity 3;
-
+		mental_act {
+			if(id == 1){
+				System.out.println("moving down"  + id);
+			}
+		}
+    	
 		act moveDown(id);
+		succeed_step;
 	}
  	 
 	/**
@@ -128,13 +137,22 @@ behaving_entity ChaserAgent {
 	 */
 	sequential behavior move() {
 		precondition {
-			(PlayerWME locationX::playerX)
-			(BotWME locationX::botX id::id) 
+			(PlayerWME locationX::playerX locationY::playerY)
+			(BotWME id::id locationX::botX locationY::botY trajectoryX::trajectoryX) 
 			(botX > (playerX + botSpeed))
+			(botY >= (playerY - botSpeed)) // no need to move vertical
+			(botY <= (playerY + botSpeed)) // no need to move vertical
+			(trajectoryX>=0) // only consider going left if we are not moving left
 		}
 		specificity 2;
+		mental_act {
+			if(id == 1){
+				System.out.println("moving left"  + id);
+			}
+		}
 
 		act moveLeft(id);
+		succeed_step;
 	}
 
 	/**
@@ -142,13 +160,22 @@ behaving_entity ChaserAgent {
 	 */
 	sequential behavior move() {
 		precondition { 
-			(PlayerWME locationX::playerX)
-			(BotWME locationX::botX id::id) 
+			(PlayerWME locationX::playerX locationY::playerY)
+			(BotWME id::id locationX::botX locationY::botY trajectoryX::trajectoryX) 
 			(botX < (playerX - botSpeed))
+			(botY >= (playerY - botSpeed)) // no need to move vertical
+			(botY <= (playerY + botSpeed)) // no need to move vertical
+			(trajectoryX<=0) // only consider moving right if we are not moving right
 		}
 		specificity 2;
+		mental_act {
+			if(id == 1){
+				System.out.println("moving right"  + id);
+			}
+		}
 
 		act moveRight(id);
+		succeed_step;
 	}
 	
 	/**
@@ -160,10 +187,28 @@ behaving_entity ChaserAgent {
 	 */
 	sequential behavior move() {
 		precondition {
-			(BotWME id::id)
+			(PlayerWME locationX::playerX locationY::playerY)
+			(BotWME id::id locationX::botX locationY::botY trajectoryX::trajectoryX trajectoryY::trajectory) 
+			(botY >= (playerY - botSpeed)) // no need to move vertical
+			(botY <= (playerY + botSpeed)) // no need to move vertical
+			(botX >= (playerX - botSpeed)) // no need to move horizontal
+			(botX <= (playerX + botSpeed)) // no need to move horizontal
 		}
 		specificity 1;
+		mental_act {
+			if(id == 1){
+				System.out.println("stopping:" + id);
+			}
+		}
+		
 		act stop(id);
+		succeed_step;
+	}
+
+	/* if there are no changes in moves to be made */
+	sequential behavior move() {
+		specificity 0;
+		succeed_step;
 	}
 
     /**
@@ -174,6 +219,10 @@ behaving_entity ChaserAgent {
      * evaluates to true.
      */
 	sequential behavior Wait(int milliseconds) {
+		precondition {
+			(BotWME id::id)
+		}
+
 		long finish;
 	    mental_act { 
 	    	finish = System.currentTimeMillis() + milliseconds; 
@@ -189,24 +238,35 @@ behaving_entity ChaserAgent {
 		precondition {
 			(BotWME id::id)
 		}
-		specificity 1;
+		specificity 3;
 		
 		act move(x, y, id);
 	}
+	
+	sequential behavior AddBot() {
+		mental_act {
+			System.out.println("Adding bot!");
+		}
+	
+		act NewBot();
+	}
+	
  
     /** 
      * Root of the active behavior tree.
      *
      * Note: this is a parallel behavior.
      * Note: the ABL compiler expects this to be the last behavior defined in the agent. 
-     * Note: prioirities are used to ensure all goals are pursued, since the move() goal can thrash in this simple example
+     * Note: priorities are used to ensure all goals are pursued, since the move() goal can thrash in this simple example
      */
     initial_tree {
-    	with (priority 3) mental_act {
+    	with (priority 10) mental_act {
 			System.out.println("Starting bot Agent");
     	}
-     	
-    	with (priority 2) subgoal manageFiring();
-    	with (priority 1) subgoal manageMovement();
+
+		with (priority 9) act NewBot();
+	
+		with (priority 2, persistent) subgoal manageFiring();
+		with (priority 1, persistent) subgoal manageMovement();
     }
 }
