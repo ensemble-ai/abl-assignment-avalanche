@@ -27,15 +27,19 @@ public class BotWME extends WME {
 	/** if the bot has fired recently */
 	private boolean hasFired;
 		
+	/** if the bot has moved into formation recently */
+	private boolean hasMoved;
+	
 	/**
 	 * Instantiates a working memory element for tracking a bot.
 	 */
-	public BotWME(Point location, Point trajectory, int id, Color color, boolean hasFired) {
+	public BotWME(Point location, Point trajectory, int id, Color color, boolean hasFired, boolean hasMoved) {
 		this.location = location;
 		this.trajectory = trajectory;
 		this.id = id;
 		this.color = color;
 		this.hasFired = hasFired;
+		this.hasMoved = hasMoved;
 	}
 	
 	/**
@@ -96,6 +100,10 @@ public class BotWME extends WME {
 
 	public boolean getHasFired() {
 		return hasFired;
+	}
+	
+	public boolean getHasMoved() {
+		return hasMoved;
 	}
 	
 	public int getId() {

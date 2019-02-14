@@ -28,9 +28,10 @@ behaving_entity ChaserAgent {
 	register act stop(int) with Stop;
 	register act fire(int, int, int, int) with Fire;
 	register act resetGun(int, boolean) with ResetGun;
+	register act resetMovers(int, boolean) with ResetMovers;
 	
 	/* added move action starter1 */
-	register act move(int, int, int) with MoveTo;
+	register act move(int, int, int, int) with MoveTo;
 	
 	/* added SetColor action starter3 */
 	register act SetColor(int, int, int, int) with SetColor;
@@ -57,7 +58,7 @@ behaving_entity ChaserAgent {
 	 * After an initial delay, continuously fire bullets. 
 	 */
 	sequential behavior manageFiring() {
-		subgoal Wait(2);					// this suspends the execution of the behavior
+		subgoal Wait(2000);					// this suspends the execution of the behavior
 		with (persistent) subgoal fire();
 	}
 
@@ -75,9 +76,6 @@ behaving_entity ChaserAgent {
 		specificity 2;
 
 		act resetGun(id, true);
-		mental_act{
-			System.out.println("id:" + id + " hasFired:" + hasFired);
-		}
 
 		act SetColor(255,0,0,id);
 		act fire(botX, botY, playerX, playerY);	
@@ -102,8 +100,8 @@ behaving_entity ChaserAgent {
 	 * Continuously move towards the player character.
 	 */
 	sequential behavior manageMovement() {
-		// with (persistent) subgoal MoveTo(100, 100);
-		with (persistent) subgoal move();
+		with (persistent) subgoal MoveTo(100, 100);
+		// with (persistent) subgoal move();
 	}
 
 	/**
@@ -256,12 +254,27 @@ behaving_entity ChaserAgent {
 	 */
 	sequential behavior MoveTo(int x, int y) {
 		precondition {
-			(BotWME id::id)
+			(PlayerWME locationX::playerX locationY::playerY)
+			(BotWME id::id hasMoved::hasMoved)
+			(hasMoved==false)
 		}
 		specificity 3;
-		
-		act move(x, y, id);
+				
+		act resetMovers(id, true);
+		act move(playerX, playerY, 50, id);
 	}
+	
+	/* reset movers */
+	sequential behavior MoveTo(int x, int y){
+		precondition {
+			(BotWME id::id hasMoved::hasMoved)
+		}
+		specificity 0;
+		
+		act resetMovers(id, false); // reset all movers
+	}
+	
+	
 	
 	sequential behavior AddBot() {
 		mental_act {
@@ -286,11 +299,7 @@ behaving_entity ChaserAgent {
 
 		sequential{
 			subgoal AddBot();
-			subgoal Wait(100);
 			subgoal AddBot();
-			subgoal Wait(100);
-			subgoal AddBot();
-			subgoal Wait(100);
 			subgoal AddBot();
 	
 			parallel{

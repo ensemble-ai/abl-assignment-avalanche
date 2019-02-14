@@ -23,7 +23,9 @@ public class Bot {
 
 	/** if the bot has fired recently */
 	private boolean hasFired = false;
-	
+
+	private boolean hasMoved = false;
+		
 	private int size = Size;
 	
 	public Bot() {
@@ -32,6 +34,7 @@ public class Bot {
 		this.id = IdCount++;
 		this.color = new Color(255, 165, 0);
 		this.hasFired = false;
+		this.hasMoved = false;
 	}
 
 	public Point getLocation() {
@@ -93,5 +96,13 @@ public class Bot {
 	
 	public void setHasFired(boolean hasFired) {
 		this.hasFired=  hasFired;
+	}
+	
+	public boolean getHasMoved() {
+		return this.hasMoved;
+	}
+	
+	public void setHasMoved(boolean hasMoved) {
+		this.hasMoved = hasMoved;
 	}
 }
