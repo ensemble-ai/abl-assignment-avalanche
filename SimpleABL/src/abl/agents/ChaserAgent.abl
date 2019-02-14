@@ -76,7 +76,7 @@ behaving_entity ChaserAgent {
 
 		act resetGun(id, true);
 		mental_act{
-			//System.out.println("id:" + id + " hasFired:" + hasFired);
+			System.out.println("id:" + id + " hasFired:" + hasFired);
 		}
 
 		act SetColor(255,0,0,id);
@@ -208,17 +208,16 @@ behaving_entity ChaserAgent {
 	sequential behavior move() {
 		precondition {
 			(PlayerWME locationX::playerX locationY::playerY)
-			(BotWME id::id locationX::botX locationY::botY trajectoryX::trajectoryX trajectoryY::trajectoryY) 
+			(BotWME id::id locationX::botX locationY::botY) 
 			(botY >= (playerY - botSpeed)) // no need to move vertical
 			(botY <= (playerY + botSpeed)) // no need to move vertical
 			(botX >= (playerX - botSpeed)) // no need to move horizontal
 			(botX <= (playerX + botSpeed)) // no need to move horizontal
-			(trajectoryX != 0 && trajectoryY != 0)
 		}
 		specificity 1;
 		mental_act {
 			if(id == 1){
-				System.out.println("stopping:(" + trajectoryX + ", " + trajectoryY + ")");
+				System.out.println("stopping:" + id);
 			}
 		}
 		
