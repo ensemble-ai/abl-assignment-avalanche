@@ -23,15 +23,19 @@ public class BotWME extends WME {
 	
 	/** Color of the bot */
 	private Color color;
+	
+	/** if the bot has fired recently */
+	private boolean hasFired;
 		
 	/**
 	 * Instantiates a working memory element for tracking a bot.
 	 */
-	public BotWME(Point location, Point trajectory, int id, Color color) {
+	public BotWME(Point location, Point trajectory, int id, Color color, boolean hasFired) {
 		this.location = location;
 		this.trajectory = trajectory;
 		this.id = id;
 		this.color = color;
+		this.hasFired = hasFired;
 	}
 	
 	/**
@@ -89,6 +93,10 @@ public class BotWME extends WME {
 	public int getColorB() {
 		return color.getBlue();
 	}
+
+	public boolean getHasFired() {
+		return hasFired;
+	}
 	
 	public int getId() {
 		return id;
@@ -97,5 +105,4 @@ public class BotWME extends WME {
 	public void setId(int id) {
 		this.id = id;
 	}
-
 }

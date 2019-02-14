@@ -20,8 +20,9 @@ public class Bot {
 
 	/** color of the bot */
 	private Color color;
-	
-	private boolean fired = false;
+
+	/** if the bot has fired recently */
+	private boolean hasFired = false;
 	
 	private int size = Size;
 	
@@ -30,6 +31,7 @@ public class Bot {
 		this.trajectory = new Point(0,0);
 		this.id = IdCount++;
 		this.color = new Color(255, 165, 0);
+		this.hasFired = false;
 	}
 
 	public Point getLocation() {
@@ -83,5 +85,13 @@ public class Bot {
 		dx = GameEngine.BotSpeed*dx/magnitude;
 		dy = GameEngine.BotSpeed*dy/magnitude;
 		this.setTrajectory(new Point((int) dx, (int) dy));
+	}
+	
+	public boolean getHasFired() {
+		return this.hasFired;
+	}
+	
+	public void setHasFired(boolean hasFired) {
+		this.hasFired=  hasFired;
 	}
 }
