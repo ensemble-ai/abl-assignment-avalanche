@@ -285,9 +285,20 @@ behaving_entity ChaserAgent {
 			System.out.println("Starting bot Agent");
     	}
 
-		with (priority 9) act NewBot();
+		sequential{
+			subgoal AddBot();
+			subgoal Wait(100);
+			subgoal AddBot();
+			subgoal Wait(100);
+			subgoal AddBot();
+			subgoal Wait(100);
+			subgoal AddBot();
 	
-		with (priority 2, persistent) subgoal manageFiring();
-		with (priority 1, persistent) subgoal manageMovement();
+			parallel{
+				with (priority 1, persistent) subgoal manageMovement();
+				with (priority 2, persistent) subgoal manageFiring();
+			}
+		}
+
     }
 }

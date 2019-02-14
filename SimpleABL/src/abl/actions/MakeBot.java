@@ -13,8 +13,6 @@ public class MakeBot extends BaseAction {
 
 	/**
 	 * Sets the trajectory of the player to move.
-	 * Args:
-	 *  - 0: bot id
 	 */
 	public void execute(Object[] args) {
 		System.out.println("Making bot!");

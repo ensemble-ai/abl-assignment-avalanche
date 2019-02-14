@@ -106,10 +106,7 @@ public class GameEngine extends JPanel implements KeyListener {
 		this.initializeInputs();
 		
 		//spawn a single default bot
-		//spawn a single default bot
-		Bot b = new Bot();
-		b.setLocation(new Point(dimensions.x/2, dimensions.y/2));
-		this.bots.add(b);
+		makeBot();
 		
 		// spawn an update thread
 		new Thread() {
@@ -354,7 +351,7 @@ public class GameEngine extends JPanel implements KeyListener {
 	public void makeBot() {
 		//spawn a single default bot
 		Bot b = new Bot();
-		b.setLocation(new Point(10, 10));//dimensions.x/2, dimensions.y/2));
+		b.setLocation(new Point(dimensions.x/2, dimensions.y/2));
 		this.bots.add(b);
 	}
 }
