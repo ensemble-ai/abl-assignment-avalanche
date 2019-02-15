@@ -23,6 +23,9 @@ public class Bot {
 
 	/** if the bot has fired recently */
 	private boolean hasFired = false;
+	
+	/** if the bot is firing */
+	private boolean isFiring = true;
 
 	private boolean hasMoved = false;
 		
@@ -32,8 +35,9 @@ public class Bot {
 		this.location = new Point(0,0);
 		this.trajectory = new Point(0,0);
 		this.id = IdCount++;
-		this.color = new Color(255, 165, 0);
+		this.color = new Color(255, 0, 0);
 		this.hasFired = false;
+		this.isFiring = true;
 		this.hasMoved = false;
 	}
 
@@ -95,7 +99,15 @@ public class Bot {
 	}
 	
 	public void setHasFired(boolean hasFired) {
-		this.hasFired=  hasFired;
+		this.hasFired =  hasFired;
+	}
+	
+	public boolean getIsFiring() {
+		return this.isFiring;
+	}
+	
+	public void setIsFiring(boolean isFiring) {
+		this.isFiring = isFiring;
 	}
 	
 	public boolean getHasMoved() {

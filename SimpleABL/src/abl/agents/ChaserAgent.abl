@@ -70,16 +70,18 @@ behaving_entity ChaserAgent {
 	sequential behavior fire() {
 		precondition {
 			(PlayerWME locationX::playerX locationY::playerY)	// locationX invokes PlayerMWE.getLocationX() 
-			(BotWME id::id locationX::botX locationY::botY hasFired::hasFired)   // :: is used to bind properties to behavior scoped variables
+			(BotWME id::id locationX::botX locationY::botY hasFired::hasFired isFiring::isFiring)   // :: is used to bind properties to behavior scoped variables
+			(isFiring==true)
 			(hasFired==false)
 		}
 		specificity 2;
 
 		act resetGun(id, true);
 
-		act SetColor(255,0,0,id);
+		//act SetColor(255,0,0,id);
+		subgoal Wait(5);
 		act fire(botX, botY, playerX, playerY);	
-		act SetColor(0,255,255,id);
+		//act SetColor(125,0,0,id);
 	}
 	
 	/* separated cooldown */
@@ -95,6 +97,15 @@ behaving_entity ChaserAgent {
 		act resetGun(id, false); // reset all guns
 	}
 	
+	sequential behavior fire() {
+		precondition {
+			(BotWME id::id locationX::botX locationY::botY isFiring::isFiring)   // :: is used to bind properties to behavior scoped variables
+			(isFiring==false)
+		}
+		specificity 0;		
+				
+		subgoal Wait(500);
+	}
 
 	/**
 	 * Continuously move towards the player character.
@@ -260,7 +271,7 @@ behaving_entity ChaserAgent {
 		}
 		specificity 3;
 				
-		act resetMovers(id, true);
+		act resetMovers(id, true); // set this id as needing to be reset
 		act move(playerX, playerY, 50, id);
 	}
 	
